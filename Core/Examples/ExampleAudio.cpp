@@ -9,7 +9,10 @@ using namespace Atom;
 int main() {
     Audio::Initialize();
 
-    Audio::PlayOneShot("C:/Users/conta/Desktop/Songs/ABYSS WATCHER.wav");
+    Audio::PlayOneShot("");
+
+    for (;;) {
+    }
 
     Audio::Shutdown();
     return 0;

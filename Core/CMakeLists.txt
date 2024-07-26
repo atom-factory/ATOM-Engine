@@ -13,6 +13,8 @@ add_library(atomCore STATIC
         Lib/Audio.cpp
         Lib/Audio.h
         Lib/Platform.h
+        Lib/GameApp.cpp
+        Lib/GameApp.h
 )
 
 # Examples
