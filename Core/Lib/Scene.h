@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "Types.h"
 
 namespace Atom {
 
@@ -11,10 +12,10 @@ namespace Atom {
         Scene() = default;
 
         void Start() {}
-        void Update() {}
+        void Update(f64 dT) {}
         void FixedUpdate() {}
         void LateUpdate() {}
-        void Destroy() {}
+        void Destroyed() {}
     };
 
 }  // namespace Atom

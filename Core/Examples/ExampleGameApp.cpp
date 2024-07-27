@@ -12,14 +12,17 @@ public:
     void Shutdown() override;
 };
 
-void ExampleApp::Initialize() {}
+void ExampleApp::Initialize() {
+    // This is where you can create your scenes, add game objects, and load any data needed
+    // before gameplay actually starts.
+}
 
-void ExampleApp::Shutdown() {}
+void ExampleApp::Shutdown() {
+    // This is where you clean up everything you created on initialization. Anything that isn't
+    // a member of IGameApp needs to be manually cleaned up.
+}
 
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+PLATFORM_MAIN {
     ExampleApp app;
-
-    app.Run();
-
-    return 0;
+    return app.Run();
 }

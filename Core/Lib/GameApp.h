@@ -6,6 +6,7 @@
 
 #include "Types.h"
 #include "GameWindow.h"
+#include "Scene.h"
 #include "Timer.h"
 
 namespace Atom {
@@ -16,14 +17,15 @@ namespace Atom {
         virtual void Initialize() = 0;
         virtual void Shutdown()   = 0;
 
-        void Run();
+        int Run();
 
         GameWindow* GetWindow() const {
             return m_Window.get();
         }
 
-    private:
+    protected:
         Unique<GameWindow> m_Window = nullptr;
         Timer m_Timer;
+        Scene* m_ActiveScene = nullptr;
     };
 }  // namespace Atom

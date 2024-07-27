@@ -12,6 +12,8 @@
 
 #pragma comment(lib, "xaudio2.lib")
 
+#define PLATFORM_MAIN int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+
 /**
  * @brief Prints debug message to debugger console when app runs in WIN32 mode
  */
