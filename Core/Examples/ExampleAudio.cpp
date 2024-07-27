@@ -6,7 +6,7 @@
 
 using namespace Atom;
 
-int main() {
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow) {
     Audio::Initialize();
 
     Audio::PlayOneShot("");

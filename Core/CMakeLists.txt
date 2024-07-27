@@ -15,6 +15,9 @@ add_library(atomCore STATIC
         Lib/Platform.h
         Lib/GameApp.cpp
         Lib/GameApp.h
+        Lib/Types.h
+        Lib/GameWindow.cpp
+        Lib/GameWindow.h
 )
 
 # Examples
