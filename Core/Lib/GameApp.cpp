@@ -19,8 +19,7 @@ namespace Atom {
             // IMPORTANT: MAKE SURE WE DISPATCH WINDOWS API MESSAGES OR THE WINDOW IS BRICKED
             m_Window->DispatchMessages();
 
-            const auto dT = m_Timer.GetDeltaTime();
-            m_ActiveScene->Update(dT);
+            m_ActiveScene->Update(m_Timer.GetDeltaTime());
 
             // Do game loop stuff here!
             m_ActiveScene->LateUpdate();
