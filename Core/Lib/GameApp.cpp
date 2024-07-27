@@ -11,7 +11,12 @@ namespace Atom {
     }
 
     void IGameApp::Run() const {
-        m_Window->Run();
+        while (!m_Window->ShouldClose()) {
+            // IMPORTANT: MAKE SURE WE DISPATCH WINDOWS API MESSAGES OR THE WINDOW IS BRICKED
+            m_Window->DispatchMessages();
+
+            // Do game loop stuff here!
+        }
     }
 
     IGameApp::~IGameApp() {

@@ -24,7 +24,7 @@ namespace Atom {
         wc.cbWndExtra    = sizeof(GameWindow);
 
         if (const auto registerResult = ::RegisterClassExA(&wc); registerResult <= 0) {
-            throw std::runtime_error("Failed to register window class");
+            m_ShouldClose = true;
         }
 
         const u32 scrWidth  = ::GetSystemMetrics(SM_CXSCREEN);
@@ -45,14 +45,13 @@ namespace Atom {
                                      m_Instance,
                                      this);
         if (!m_Handle) {
-            throw std::runtime_error("Failed to create window handle");
+            m_ShouldClose = true;
         }
 
         ::SetWindowLongPtr(m_Handle, GWLP_USERDATA, RCAST<LONG_PTR>(this));
-    }
 
-    void GameWindow::Run() const {
-        MainLoop();
+        ::ShowWindow(m_Handle, SW_SHOW);
+        ::UpdateWindow(m_Handle);
     }
 
     void GameWindow::Shutdown() {
@@ -70,20 +69,14 @@ namespace Atom {
         return m_Size;
     }
 
-    void GameWindow::MainLoop() const {
-        ::ShowWindow(m_Handle, SW_SHOW);
-        ::UpdateWindow(m_Handle);
+    bool GameWindow::ShouldClose() const {
+        return m_ShouldClose;
+    }
 
-        MSG msg = {};
-        for (;;) {
-            if (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
-                ::TranslateMessage(&msg);
-                ::DispatchMessage(&msg);
-            }
-
-            if (msg.message == WM_QUIT) {
-                break;
-            }
+    void GameWindow::DispatchMessages() {
+        if (::PeekMessage(&m_Message, nullptr, 0, 0, PM_REMOVE)) {
+            ::TranslateMessage(&m_Message);
+            ::DispatchMessage(&m_Message);
         }
     }
 
@@ -97,6 +90,10 @@ namespace Atom {
 
         switch (msg) {
             case WM_DESTROY:
+                ::PostQuitMessage(0);
+                return 0;
+            case WM_CLOSE:
+                gameWindow->m_ShouldClose = true;
                 ::PostQuitMessage(0);
                 return 0;
             case WM_SIZE: {
