@@ -1,0 +1,4 @@
+*.inl linguist-language=C++
+*.h linguist-language=C++
+CMakeLists.txt linguist-vendored
+*/CMakeLists.txt linguist-vendored
