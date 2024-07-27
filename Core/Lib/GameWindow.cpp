@@ -29,8 +29,8 @@ namespace Atom {
 
         const u32 scrWidth  = ::GetSystemMetrics(SM_CXSCREEN);
         const u32 scrHeight = ::GetSystemMetrics(SM_CYSCREEN);
-        const u32 posX      = (scrWidth - m_Size.X) / 2;
-        const u32 posY      = (scrHeight - m_Size.Y) / 2;
+        const u32 posX      = CAST<u32>((scrWidth - m_Size.X) / 2);
+        const u32 posY      = CAST<u32>((scrHeight - m_Size.Y) / 2);
 
         m_Handle = ::CreateWindowExA(0,
                                      "AtomGameWindowClass",
@@ -132,8 +132,8 @@ namespace Atom {
     }
 
     LRESULT GameWindow::OnResize(UINT width, UINT height) {
-        m_Size.X = width;
-        m_Size.Y = height;
+        m_Size.X = CAST<f32>(width);
+        m_Size.Y = CAST<f32>(height);
         // Resize render context
         return S_OK;
     }

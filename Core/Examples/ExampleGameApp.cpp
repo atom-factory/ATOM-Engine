@@ -17,7 +17,7 @@ void ExampleApp::Initialize() {}
 void ExampleApp::Shutdown() {}
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-    const ExampleApp app;
+    ExampleApp app;
 
     app.Run();
 

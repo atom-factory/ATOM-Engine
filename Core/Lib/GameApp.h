@@ -6,6 +6,7 @@
 
 #include "Types.h"
 #include "GameWindow.h"
+#include "Timer.h"
 
 namespace Atom {
     class IGameApp {
@@ -15,7 +16,7 @@ namespace Atom {
         virtual void Initialize() = 0;
         virtual void Shutdown()   = 0;
 
-        void Run() const;
+        void Run();
 
         GameWindow* GetWindow() const {
             return m_Window.get();
@@ -23,5 +24,6 @@ namespace Atom {
 
     private:
         Unique<GameWindow> m_Window = nullptr;
+        Timer m_Timer;
     };
 }  // namespace Atom

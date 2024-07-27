@@ -10,8 +10,11 @@ namespace Atom {
         m_Window->Initialize();
     }
 
-    void IGameApp::Run() const {
+    void IGameApp::Run() {
+        m_Timer.Start();
         while (!m_Window->ShouldClose()) {
+            auto dT = m_Timer.GetDeltaTime();
+
             // IMPORTANT: MAKE SURE WE DISPATCH WINDOWS API MESSAGES OR THE WINDOW IS BRICKED
             m_Window->DispatchMessages();
 

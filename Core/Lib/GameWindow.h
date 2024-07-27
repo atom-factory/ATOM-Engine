@@ -5,15 +5,14 @@
 #pragma once
 
 #include "Platform.h"
-#include "Timer.h"
 #include "Types.h"
 
 namespace Atom {
     class GameWindow {
     public:
         GameWindow(const UINT width, const UINT height) : m_Handle(nullptr), m_Instance(nullptr) {
-            m_Size.X      = width;
-            m_Size.Y      = height;
+            m_Size.X      = CAST<f32>(width);
+            m_Size.Y      = CAST<f32>(height);
             m_ShouldClose = false;
         }
         void Initialize();

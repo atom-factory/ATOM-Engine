@@ -19,6 +19,8 @@ add_library(atomCore STATIC
         Lib/GameWindow.cpp
         Lib/GameWindow.h
         Lib/Timer.h
+        Lib/Scene.cpp
+        Lib/Scene.h
 )
 
 # Examples
