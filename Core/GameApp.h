@@ -12,14 +12,14 @@
 namespace Atom {
     class IGameApp {
     public:
-        IGameApp();
+        explicit IGameApp(str name);
         virtual ~IGameApp();
         virtual void Initialize() = 0;
         virtual void Shutdown()   = 0;
 
         int Run();
 
-        GameWindow* GetWindow() const {
+        [[nodiscard]] GameWindow* GetWindow() const {
             return m_Window.get();
         }
 
@@ -27,5 +27,6 @@ namespace Atom {
         Unique<GameWindow> m_Window = nullptr;
         Timer m_Timer;
         Scene* m_ActiveScene = nullptr;
+        str m_Name;
     };
 }  // namespace Atom

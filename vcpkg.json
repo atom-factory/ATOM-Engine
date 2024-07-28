@@ -1,0 +1,9 @@
+{
+  "name" : "atom",
+  "version-string" : "1.0.0",
+  "builtin-baseline" : "01f602195983451bc83e72f4214af2cbc495aa94",
+  "dependencies" : [ {
+    "name" : "glew",
+    "version>=" : "2.2.0#3"
+  } ]
+}

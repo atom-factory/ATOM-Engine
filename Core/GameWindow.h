@@ -15,14 +15,14 @@ namespace Atom {
             m_Size.Y      = CAST<f32>(height);
             m_ShouldClose = false;
         }
-        void Initialize();
+        void Initialize(const str& title);
         void Shutdown();
 
-        HWND GetHandle() const;
-        Vector2 GetSize() const;
+        [[nodiscard]] HWND GetHandle() const;
+        [[nodiscard]] Vector2 GetSize() const;
 
         void DispatchMessages();
-        bool ShouldClose() const;
+        [[nodiscard]] bool ShouldClose() const;
 
     private:
         static LRESULT CALLBACK MessageHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -35,7 +35,7 @@ namespace Atom {
         LRESULT OnRightMouseButtonUp();
         LRESULT OnMouseMove(UINT xPos, UINT yPos);
 
-        Vector2 m_Size;
+        Vector2 m_Size {};
         HWND m_Handle;
         HINSTANCE m_Instance;
         MSG m_Message = {};

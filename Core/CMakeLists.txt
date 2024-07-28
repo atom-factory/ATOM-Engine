@@ -18,4 +18,11 @@ add_library(atomCore STATIC
         Timer.h
         Scene.cpp
         Scene.h
+        GameObject.cpp
+        GameObject.h
+        Color.cpp
+        Color.h
+        MathUtils.h
 )
+
+target_link_libraries(atomCore PRIVATE GLEW::GLEW)

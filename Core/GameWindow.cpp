@@ -4,8 +4,10 @@
 
 #include "GameWindow.h"
 
+#include "Graphics/Context.h"
+
 namespace Atom {
-    void GameWindow::Initialize() {
+    void GameWindow::Initialize(const str& title) {
         m_Instance = ::GetModuleHandle(nullptr);
 
         WNDCLASSEXA wc;
@@ -29,12 +31,12 @@ namespace Atom {
 
         const u32 scrWidth  = ::GetSystemMetrics(SM_CXSCREEN);
         const u32 scrHeight = ::GetSystemMetrics(SM_CYSCREEN);
-        const u32 posX      = CAST<u32>((scrWidth - m_Size.X) / 2);
-        const u32 posY      = CAST<u32>((scrHeight - m_Size.Y) / 2);
+        const u32 posX      = (scrWidth - CAST<u32>(m_Size.X)) / 2;
+        const u32 posY      = (scrHeight - CAST<u32>(m_Size.Y)) / 2;
 
         m_Handle = ::CreateWindowExA(0,
                                      "AtomGameWindowClass",
-                                     "ATOM Game Window",
+                                     title.c_str(),
                                      WS_OVERLAPPEDWINDOW,
                                      CAST<i32>(posX),
                                      CAST<i32>(posY),
@@ -131,10 +133,10 @@ namespace Atom {
         return DefWindowProc(hwnd, msg, wParam, lParam);
     }
 
-    LRESULT GameWindow::OnResize(UINT width, UINT height) {
+    LRESULT GameWindow::OnResize(const UINT width, const UINT height) {
         m_Size.X = CAST<f32>(width);
         m_Size.Y = CAST<f32>(height);
-        // Resize render context
+        GraphicsContext::Resize(width, height);
         return S_OK;
     }
 

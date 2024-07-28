@@ -5,14 +5,16 @@
 #pragma once
 
 #include <Windows.h>
+#include <codecvt>
 #include <cstdio>
+#include <locale>
 #include <stdexcept>
 #include <windowsx.h>
 #include <xaudio2.h>
 
 #pragma comment(lib, "xaudio2.lib")
 
-#define PLATFORM_MAIN int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+#define WIN32_MAIN int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 /**
  * @brief Prints debug message to debugger console when app runs in WIN32 mode
@@ -44,4 +46,14 @@ inline void CheckResult(const HRESULT hr, const char* msg) {
     if (FAILED(hr)) {
         throw std::runtime_error(msg);
     }
+}
+
+inline void WideToANSI(const std::wstring& value, std::string& converted) {
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    converted = converter.to_bytes(value);
+}
+
+inline void ANSIToWide(const std::string& value, std::wstring& converted) {
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    converted = converter.from_bytes(value);
 }
