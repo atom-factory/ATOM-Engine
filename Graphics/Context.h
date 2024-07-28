@@ -17,8 +17,8 @@ namespace Atom {
 
         u32 CreateVAO(const std::vector<f32>& vertices, const std::vector<u32>& indices);
 
-        void DrawRectangle(Vector2 size, Vector2 position, Color color, u32 shader);
-        inline void DrawEllipse() {}
+        void DrawRectangle(Vector2 size, Vector2 position, Color color);
+        void DrawEllipse(float centerX, float centerY, float radiusX, float radiusY, int segments);
         inline void DrawPath() {}
         inline void DrawString() {}
         inline void DrawBitmap() {}

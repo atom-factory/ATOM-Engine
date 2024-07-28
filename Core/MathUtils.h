@@ -7,6 +7,8 @@
 #include "Types.h"
 
 namespace Atom::Math {
+    static constexpr f32 kPI = 3.14159265358979323846f;
+
     template<typename T>
     T Lerp(T a, T b, f64 t) {
         static_assert(std::is_arithmetic_v<T>, "T must be arithmetic type");

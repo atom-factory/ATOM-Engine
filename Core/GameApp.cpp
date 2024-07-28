@@ -22,8 +22,6 @@ namespace Atom {
         m_Timer.Start();
         m_ActiveScene->Start();
 
-        auto shader = Shader::Create(kDefaultVertexShader, kDefaultFragmentShader);
-
         while (!m_Window->ShouldClose()) {
             // IMPORTANT: MAKE SURE WE DISPATCH WINDOWS API MESSAGES OR THE WINDOW IS BRICKED
             m_Window->DispatchMessages();
@@ -34,7 +32,8 @@ namespace Atom {
 
                 // Render
                 GraphicsContext::BeginFrame();
-                GraphicsContext::DrawRectangle({0.5, 0.5}, {0, 0}, Colors::Cyan, shader);
+                // GraphicsContext::DrawRectangle({0.5, 0.5}, {0, 0}, Colors::Cyan);
+                GraphicsContext::DrawEllipse(0, 0, 0.25, 0.25, 36);
                 GraphicsContext::EndFrame(m_Window->GetHandle());
 
                 m_ActiveScene->LateUpdate();

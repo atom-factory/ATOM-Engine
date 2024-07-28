@@ -6,6 +6,8 @@
 
 #include "Graphics/Context.h"
 
+#include <GL/glew.h>
+
 namespace Atom {
     void GameWindow::Initialize(const str& title) {
         m_Instance = ::GetModuleHandle(nullptr);
@@ -109,7 +111,19 @@ namespace Atom {
             case WM_DISPLAYCHANGE:
                 ::InvalidateRect(hwnd, nullptr, false);
                 return 0;
-            case WM_KEYDOWN:
+            case WM_KEYDOWN: {
+                // Close window on ESC
+                if (CAST<i32>(wParam) == VK_ESCAPE) {
+                    gameWindow->m_ShouldClose = true;
+                }
+
+                // Toggle wireframe
+                static bool wireframe = false;
+                if (CAST<i32>(wParam) == VK_TAB) {
+                    glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
+                    wireframe = !wireframe;
+                }
+            }
                 return gameWindow->OnKeyDown();
             case WM_KEYUP:
                 return gameWindow->OnKeyUp();

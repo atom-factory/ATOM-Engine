@@ -3,6 +3,8 @@
 //
 
 #include "Context.h"
+#include "Shader.h"
+#include "Core/MathUtils.h"
 
 #include <GL/glew.h>
 #include <GL/wglew.h>
@@ -92,7 +94,7 @@ namespace Atom {
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER,
-                     CAST<GLsizeiptr>(vertices.size()) * sizeof(float),
+                     CAST<GLsizeiptr>(vertices.size()) * sizeof(f32),
                      vertices.data(),
                      GL_STATIC_DRAW);
 
@@ -102,7 +104,7 @@ namespace Atom {
                      indices.data(),
                      GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(f32), (void*)0);
         glEnableVertexAttribArray(0);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -111,14 +113,14 @@ namespace Atom {
         return VAO;
     }
 
-    void GenerateRectVertices(const float centerX,
-                              const float centerY,
-                              const float width,
-                              const float height,
-                              std::vector<float>& vertices,
+    void GenerateRectVertices(const f32 centerX,
+                              const f32 centerY,
+                              const f32 width,
+                              const f32 height,
+                              std::vector<f32>& vertices,
                               std::vector<unsigned int>& indices) {
-        const float halfWidth  = width / 2.0f;
-        const float halfHeight = height / 2.0f;
+        const f32 halfWidth  = width / 2.0f;
+        const f32 halfHeight = height / 2.0f;
 
         vertices = {
           centerX - halfWidth,
@@ -134,12 +136,35 @@ namespace Atom {
         indices = {0, 1, 2, 2, 3, 0};
     }
 
-    void GraphicsContext::DrawRectangle(const Vector2 size,
-                                        const Vector2 position,
-                                        Color color,
-                                        const u32 shader) {
-        std::vector<float> vertices = {};
-        std::vector<u32> indices    = {};
+    void GenerateEllipseVertices(const f32 centerX,
+                                 const f32 centerY,
+                                 const f32 radiusX,
+                                 const f32 radiusY,
+                                 const i32 segments,
+                                 std::vector<f32>& vertices,
+                                 std::vector<u32>& indices) {
+        vertices.clear();
+        const f32 angleIncrement = 2.0f * Math::kPI / CAST<f32>(segments);
+        for (int i = 0; i <= segments; ++i) {
+            const f32 angle = CAST<f32>(i) * angleIncrement;
+            f32 x           = centerX + radiusX * std::cos(angle);
+            f32 y           = centerY + radiusY * std::sin(angle);
+            vertices.push_back(x);
+            vertices.push_back(y);
+        }
+
+        indices.clear();
+        for (int i = 0; i < segments; ++i) {
+            indices.push_back(0);
+            indices.push_back(i + 1);
+            indices.push_back(i + 2);
+        }
+    }
+
+    void GraphicsContext::DrawRectangle(const Vector2 size, const Vector2 position, Color color) {
+        const auto shader         = Shader::Create(kDefaultVertexShader, kDefaultFragmentShader);
+        std::vector<f32> vertices = {};
+        std::vector<u32> indices  = {};
         GenerateRectVertices(position.X, position.Y, size.X, size.Y, vertices, indices);
         const auto vao = CreateVAO(vertices, indices);
 
@@ -148,5 +173,19 @@ namespace Atom {
 
         // draw rectangle
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+    }
+
+    void
+    GraphicsContext::DrawEllipse(f32 centerX, f32 centerY, f32 radiusX, f32 radiusY, int segments) {
+        const auto shader         = Shader::Create(kDefaultVertexShader, kDefaultFragmentShader);
+        std::vector<f32> vertices = {};
+        std::vector<u32> indices  = {};
+        GenerateEllipseVertices(centerX, centerY, radiusX, radiusY, segments, vertices, indices);
+        const auto vao = CreateVAO(vertices, indices);
+
+        glUseProgram(shader);
+        glBindVertexArray(vao);
+
+        glDrawElements(GL_TRIANGLES, segments * 3, GL_UNSIGNED_INT, nullptr);
     }
 }  // namespace Atom
