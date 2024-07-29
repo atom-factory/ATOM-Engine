@@ -2,6 +2,7 @@
 // Created: 7/28/2024.
 //
 
+#include "Font.h"
 #include "Platform.h"
 #include "GameApp.h"
 

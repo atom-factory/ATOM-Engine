@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Platform.h"
-#include "Types.h"
+#include "../Shared/Types.h"
 
 namespace Atom {
     class Timer {

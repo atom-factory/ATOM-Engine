@@ -16,4 +16,4 @@ add_library(atomGraphics STATIC
         Shader.cpp
 )
 
-target_link_libraries(atomGraphics PRIVATE GLEW::GLEW)
+target_link_libraries(atomGraphics PRIVATE GLEW::GLEW freetype-gl glm::glm-header-only)

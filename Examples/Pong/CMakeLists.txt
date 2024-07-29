@@ -8,9 +8,24 @@ include_directories(
         ../../Shared
         ../../Audio
         ../../Graphics
+        ../../GUI
 )
 
-add_executable(Pong WIN32 main.cpp
+add_executable(Pong WIN32
+        main.cpp
         Ball.cpp
-        Ball.h)
-target_link_libraries(Pong PRIVATE atomCore atomAudio atomGraphics GLEW::GLEW)
+        Ball.h
+)
+
+target_link_libraries(Pong PRIVATE
+        GLEW::GLEW
+        freetype-gl
+        atomCore
+        atomAudio
+        atomGraphics
+        atomGUI
+)
+
+add_custom_command(TARGET Pong PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets)

@@ -4,16 +4,21 @@
 
 #include "Context.h"
 #include "Shader.h"
-#include "Core/MathUtils.h"
+#include "MathUtils.h"
+#include "Core/Camera.h"
 
 #include <GL/glew.h>
 #include <GL/wglew.h>
 #include <GL/gl.h>
 
 namespace Atom {
+    static HWND g_TargetHWND;
+
     bool GraphicsContext::Initialize(HWND hwnd) {
         if (!hwnd)
             return false;
+
+        g_TargetHWND = hwnd;
 
         const auto hdc = ::GetDC(hwnd);
 
@@ -64,6 +69,9 @@ namespace Atom {
         ::GetClientRect(hwnd, &rc);
         glViewport(0, 0, rc.right, rc.bottom);
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         return true;
     }
 
@@ -72,14 +80,20 @@ namespace Atom {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void GraphicsContext::EndFrame(HWND hwnd) {
-        const auto hdc = ::GetDC(hwnd);
+    void GraphicsContext::EndFrame() {
+        const auto hdc = ::GetDC(g_TargetHWND);
         ::SwapBuffers(hdc);
-        ::ReleaseDC(hwnd, hdc);
+        ::ReleaseDC(g_TargetHWND, hdc);
     }
 
     void GraphicsContext::Resize(const u32 width, const u32 height) {
         glViewport(0, 0, CAST<i32>(width), CAST<i32>(height));
+    }
+
+    Vector2 GetScreenSize() {
+        RECT rc;
+        ::GetClientRect(g_TargetHWND, &rc);
+        return Vector2(rc.right - rc.left, rc.bottom - rc.top);
     }
 
     u32 GraphicsContext::CreateVAO(const std::vector<f32>& vertices,
@@ -161,31 +175,54 @@ namespace Atom {
         }
     }
 
-    void GraphicsContext::DrawRectangle(const Vector2 size, const Vector2 position, Color color) {
+    void GraphicsContext::DrawRectangle(const Vector2 size,
+                                        const Vector2 position,
+                                        const Color& fillColor) {
         const auto shader         = Shader::Create(kDefaultVertexShader, kDefaultFragmentShader);
         std::vector<f32> vertices = {};
         std::vector<u32> indices  = {};
         GenerateRectVertices(position.X, position.Y, size.X, size.Y, vertices, indices);
         const auto vao = CreateVAO(vertices, indices);
 
-        glUseProgram(shader);
+        glUseProgram(shader->GetProgram());
+        shader->SetMat4("uProjection", Camera::GetProjectionMatrix(GetScreenSize()));
+        shader->SetVec4("uColor",
+                        {
+                          fillColor.Red,
+                          fillColor.Green,
+                          fillColor.Blue,
+                          fillColor.Alpha,
+                        });
         glBindVertexArray(vao);
 
         // draw rectangle
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+        delete shader;
     }
 
-    void
-    GraphicsContext::DrawEllipse(f32 centerX, f32 centerY, f32 radiusX, f32 radiusY, int segments) {
+    void GraphicsContext::DrawEllipse(
+      f32 centerX, f32 centerY, f32 radiusX, f32 radiusY, int segments, const Color& fillColor) {
         const auto shader         = Shader::Create(kDefaultVertexShader, kDefaultFragmentShader);
         std::vector<f32> vertices = {};
         std::vector<u32> indices  = {};
         GenerateEllipseVertices(centerX, centerY, radiusX, radiusY, segments, vertices, indices);
         const auto vao = CreateVAO(vertices, indices);
 
-        glUseProgram(shader);
+        glUseProgram(shader->GetProgram());
+        shader->SetMat4("uProjection", Camera::GetProjectionMatrix(GetScreenSize()));
+        shader->SetVec4("uColor",
+                        {
+                          fillColor.Red,
+                          fillColor.Green,
+                          fillColor.Blue,
+                          fillColor.Alpha,
+                        });
+
         glBindVertexArray(vao);
 
         glDrawElements(GL_TRIANGLES, segments * 3, GL_UNSIGNED_INT, nullptr);
+
+        delete shader;
     }
 }  // namespace Atom

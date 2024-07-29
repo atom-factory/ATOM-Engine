@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Types.h"
+#include "../Shared/Types.h"
 #include "GameWindow.h"
 #include "Scene.h"
 #include "Timer.h"

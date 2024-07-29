@@ -4,8 +4,9 @@
 
 #include "GameApp.h"
 
-#include "Graphics/Context.h"
-#include "Graphics/Shader.h"
+#include "Text.h"
+#include "Context.h"
+#include "Shader.h"
 
 #include <utility>
 
@@ -22,6 +23,8 @@ namespace Atom {
         m_Timer.Start();
         m_ActiveScene->Start();
 
+        Text fpsText("assets/fonts/ChakraPetch-Regular.ttf", 32);
+
         while (!m_Window->ShouldClose()) {
             // IMPORTANT: MAKE SURE WE DISPATCH WINDOWS API MESSAGES OR THE WINDOW IS BRICKED
             m_Window->DispatchMessages();
@@ -32,9 +35,9 @@ namespace Atom {
 
                 // Render
                 GraphicsContext::BeginFrame();
-                // GraphicsContext::DrawRectangle({0.5, 0.5}, {0, 0}, Colors::Cyan);
-                GraphicsContext::DrawEllipse(0, 0, 0.25, 0.25, 36);
-                GraphicsContext::EndFrame(m_Window->GetHandle());
+                // GraphicsContext::DrawRectangle({100, 100}, {640, 360}, Colors::Cyan);
+                fpsText.Draw("FPS: 60", {50, 50}, Colors::Red);
+                GraphicsContext::EndFrame();
 
                 m_ActiveScene->LateUpdate();
             }

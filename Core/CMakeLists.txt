@@ -6,13 +6,16 @@ set(CMAKE_CXX_STANDARD 23)
 include_directories(
         ${CMAKE_SOURCE_DIR}
         ../Shared
+        ../Graphics
+        ../GUI
 )
 
 add_library(atomCore STATIC
         ../Shared/Platform.h
+        ../Shared/MathUtils.h
+        ../Shared/Types.h
         GameApp.cpp
         GameApp.h
-        Types.h
         GameWindow.cpp
         GameWindow.h
         Timer.h
@@ -22,7 +25,8 @@ add_library(atomCore STATIC
         GameObject.h
         Color.cpp
         Color.h
-        MathUtils.h
+        Camera.cpp
+        Camera.h
 )
 
-target_link_libraries(atomCore PRIVATE GLEW::GLEW)
+target_link_libraries(atomCore PRIVATE atomGUI GLEW::GLEW freetype-gl glm::glm-header-only)

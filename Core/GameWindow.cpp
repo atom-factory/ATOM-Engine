@@ -3,8 +3,7 @@
 //
 
 #include "GameWindow.h"
-
-#include "Graphics/Context.h"
+#include "Context.h"
 
 #include <GL/glew.h>
 

@@ -3,7 +3,7 @@
 //
 
 #include "Color.h"
-#include "MathUtils.h"
+#include "../Shared/MathUtils.h"
 
 #include <cassert>
 
