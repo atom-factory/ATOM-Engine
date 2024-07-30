@@ -31,7 +31,7 @@ namespace Atom {
         u32 dxgiFactoryFlags = 0;
 #ifndef NDEBUG
         ComPtr<ID3D12Debug> debugController;
-        if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
+        if (SUCCEEDED(D3D12GetDebugInterface(ComReference(&debugController)))) {
             debugController->EnableDebugLayer();
             dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
         }
@@ -39,14 +39,14 @@ namespace Atom {
 
         // Create DXGI factory
         ComPtr<IDXGIFactory7> factory;
-        ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&factory)));
+        ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, ComReference(&factory)));
 
         // Create DX12 device
         ComPtr<IDXGIAdapter4> adapter;
         for (u32 adapterIndex = 0; DXGI_ERROR_NOT_FOUND != factory->EnumAdapterByGpuPreference(
                                                              adapterIndex,
                                                              DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE,
-                                                             IID_PPV_ARGS(&adapter));
+                                                             ComReference(&adapter));
              ++adapterIndex) {
             if (SUCCEEDED(D3D12CreateDevice(adapter.Get(),
                                             D3D_FEATURE_LEVEL_12_1,
@@ -57,13 +57,13 @@ namespace Atom {
         }
 
         ThrowIfFailed(
-          D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_12_1, IID_PPV_ARGS(&g_Device)));
+          D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_12_1, ComReference(&g_Device)));
 
         // Create the command queue
         D3D12_COMMAND_QUEUE_DESC qd = {};
         qd.Flags                    = D3D12_COMMAND_QUEUE_FLAG_NONE;
         qd.Type                     = D3D12_COMMAND_LIST_TYPE_DIRECT;
-        ThrowIfFailed(g_Device->CreateCommandQueue(&qd, IID_PPV_ARGS(&g_CommandQueue)));
+        ThrowIfFailed(g_Device->CreateCommandQueue(&qd, ComReference(&g_CommandQueue)));
 
         // Create the swap chain
         DXGI_SWAP_CHAIN_DESC1 scd = {};
@@ -89,25 +89,25 @@ namespace Atom {
         D3D12_DESCRIPTOR_HEAP_DESC rtvDesc = {};
         rtvDesc.NumDescriptors             = 2;
         rtvDesc.Type                       = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-        ThrowIfFailed(g_Device->CreateDescriptorHeap(&rtvDesc, IID_PPV_ARGS(&g_RTVHeap)));
+        ThrowIfFailed(g_Device->CreateDescriptorHeap(&rtvDesc, ComReference(&g_RTVHeap)));
         g_RTVDescriptorSize =
           g_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
         CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(g_RTVHeap->GetCPUDescriptorHandleForHeapStart());
         for (u32 i = 0; i < 2; i++) {
-            ThrowIfFailed(g_SwapChain->GetBuffer(i, IID_PPV_ARGS(&g_RenderTargets[i])));
+            ThrowIfFailed(g_SwapChain->GetBuffer(i, ComReference(&g_RenderTargets[i])));
             g_Device->CreateRenderTargetView(g_RenderTargets[i].Get(), nullptr, rtvHandle);
             rtvHandle.Offset(1, g_RTVDescriptorSize);
         }
 
         // Create the command allocator and list
         ThrowIfFailed(g_Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                       IID_PPV_ARGS(&g_CommandAllocator)));
+                                                       ComReference(&g_CommandAllocator)));
         ThrowIfFailed(g_Device->CreateCommandList(0,
                                                   D3D12_COMMAND_LIST_TYPE_DIRECT,
                                                   g_CommandAllocator.Get(),
                                                   nullptr,
-                                                  IID_PPV_ARGS(&g_CommandList)));
+                                                  ComReference(&g_CommandList)));
 
         // Close the command list since we will start in the recording state
         ThrowIfFailed(g_CommandList->Close());
@@ -122,7 +122,7 @@ namespace Atom {
         if (!fence) {
             g_FenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
             ThrowIfFailed(
-              g_Device->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence)));
+              g_Device->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, ComReference(&fence)));
         }
 
         const u64 currentValue = fenceValue;
@@ -198,6 +198,10 @@ namespace Atom {
     }
 
     void GraphicsContext::Resize(const u32 width, const u32 height) {}
+
+    ID3D12GraphicsCommandList* GraphicsContext::GetCommandList() {
+        return g_CommandList.Get();
+    }
 
     Vector2 GetScreenSize() {
         RECT rc;

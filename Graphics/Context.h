@@ -17,6 +17,8 @@ namespace Atom {
         void Shutdown();
         void Resize(u32 width, u32 height);
 
+        ID3D12GraphicsCommandList* GetCommandList();
+
         // void DrawRectangle(Vector2 size, Vector2 position, const Color& fillColor);
         // void DrawEllipse(float centerX,
         //                  float centerY,

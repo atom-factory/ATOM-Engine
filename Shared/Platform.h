@@ -33,6 +33,7 @@ using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 
 #define WIN32_MAIN int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+#define ComReference IID_PPV_ARGS
 
 /**
  * @brief Prints debug message to debugger console when app runs in WIN32 mode
