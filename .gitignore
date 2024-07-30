@@ -2,3 +2,5 @@ build/
 .idea/
 **/build/
 **/.idea/
+vcpkg/
+vcpkg_installed/
