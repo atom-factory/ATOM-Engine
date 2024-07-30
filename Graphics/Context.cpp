@@ -199,8 +199,24 @@ namespace Atom {
 
     void GraphicsContext::Resize(const u32 width, const u32 height) {}
 
-    ID3D12GraphicsCommandList* GraphicsContext::GetCommandList() {
-        return g_CommandList.Get();
+    ComPtr<ID3D12Device> GraphicsContext::GetDevice() {
+        return g_Device;
+    }
+
+    ComPtr<IDXGISwapChain3> GraphicsContext::GetSwapChain() {
+        return g_SwapChain;
+    }
+
+    ComPtr<ID3D12CommandQueue> GraphicsContext::GetCommandQueue() {
+        return g_CommandQueue;
+    }
+
+    ComPtr<ID3D12CommandAllocator> GraphicsContext::GetCommandAllocator() {
+        return g_CommandAllocator;
+    }
+
+    ComPtr<ID3D12GraphicsCommandList> GraphicsContext::GetCommandList() {
+        return g_CommandList;
     }
 
     Vector2 GetScreenSize() {
