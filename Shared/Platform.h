@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <locale>
 #include <stdexcept>
+#include <chrono>
 
 #include <Windows.h>
 #include <windowsx.h>
@@ -73,4 +74,8 @@ inline void WideToANSI(const std::wstring& value, std::string& converted) {
 inline void ANSIToWide(const std::string& value, std::wstring& converted) {
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
     converted = converter.from_bytes(value);
+}
+
+inline auto GetTimestamp() {
+    return std::chrono::high_resolution_clock::now();
 }

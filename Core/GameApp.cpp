@@ -21,6 +21,9 @@ namespace Atom {
         m_ActiveScene->Start();
 
         while (!m_Window->ShouldClose()) {
+            // Frame timer
+            auto start = GetTimestamp();
+
             // IMPORTANT: MAKE SURE WE DISPATCH WINDOWS API MESSAGES OR THE WINDOW IS BRICKED
             m_Window->DispatchMessages();
 
@@ -43,6 +46,12 @@ namespace Atom {
 
                 m_ActiveScene->LateUpdate();
             }
+
+            auto end             = GetTimestamp();
+            Milliseconds elapsed = end - start;
+            const auto fT        = 1000.f / elapsed.count();
+            const auto fmt       = std::format("{} | FPS: {:.2f} <DX12>", m_Name, fT);
+            ::SetWindowTextA(m_Window->GetHandle(), fmt.c_str());
         }
 
         GraphicsContext::Shutdown();

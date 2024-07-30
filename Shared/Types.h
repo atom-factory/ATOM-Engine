@@ -5,6 +5,7 @@
 #include <optional>
 #include <string>
 #include <filesystem>
+#include <chrono>
 
 #define CAST static_cast
 #define DCAST dynamic_cast
@@ -43,6 +44,8 @@ using Unique = std::unique_ptr<T>;
 
 template<class T>
 using Vector = std::vector<T>;
+
+using Milliseconds = std::chrono::duration<f32, std::milli>;
 
 namespace Atom {
     struct Vector2 {
