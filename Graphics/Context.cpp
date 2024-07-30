@@ -40,6 +40,21 @@ namespace Atom {
 
         // Create DX12 device
         ComPtr<IDXGIAdapter4> adapter;
+        for (u32 adapterIndex = 0; DXGI_ERROR_NOT_FOUND != factory->EnumAdapterByGpuPreference(
+                                                             adapterIndex,
+                                                             DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE,
+                                                             IID_PPV_ARGS(&adapter));
+             ++adapterIndex) {
+            if (SUCCEEDED(D3D12CreateDevice(adapter.Get(),
+                                            D3D_FEATURE_LEVEL_12_1,
+                                            _uuidof(ID3D12Device),
+                                            nullptr))) {
+                break;
+            }
+        }
+
+        ThrowIfFailed(
+          D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_12_1, IID_PPV_ARGS(&g_Device)));
 
         return true;
     }
