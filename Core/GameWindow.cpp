@@ -5,8 +5,6 @@
 #include "GameWindow.h"
 #include "Context.h"
 
-#include <GL/glew.h>
-
 namespace Atom {
     void GameWindow::Initialize(const str& title) {
         m_Instance = ::GetModuleHandle(nullptr);
@@ -119,7 +117,6 @@ namespace Atom {
                 // Toggle wireframe
                 static bool wireframe = false;
                 if (CAST<i32>(wParam) == VK_TAB) {
-                    glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
                     wireframe = !wireframe;
                 }
             }

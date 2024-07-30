@@ -5,15 +5,31 @@
 #pragma once
 #pragma warning(disable : 4996)
 
-#include <Windows.h>
 #include <codecvt>
 #include <cstdio>
 #include <locale>
 #include <stdexcept>
-#include <windowsx.h>
-#include <xaudio2.h>
 
+#include <Windows.h>
+#include <windowsx.h>
+#include <wrl/client.h>
+
+#include <xaudio2.h>
+#include <dxgi1_6.h>
+#include <d3d12.h>
+// #include <DirectXMath.h>
+// #include <DirectXColors.h>
+#include <d3dx12.h>
+
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "dxguid.lib")
+#pragma comment(lib, "uuid.lib")
+#pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "xaudio2.lib")
+
+// using namespace DirectX;
+using Microsoft::WRL::ComPtr;
 
 #define WIN32_MAIN int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 

@@ -29,4 +29,4 @@ add_library(atomCore STATIC
         Camera.h
 )
 
-target_link_libraries(atomCore PRIVATE atomGUI GLEW::GLEW freetype-gl glm::glm-header-only)
+target_link_libraries(atomCore PRIVATE atomGUI atomGraphics)

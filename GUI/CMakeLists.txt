@@ -19,4 +19,4 @@ add_library(atomGUI STATIC
         Font.h
 )
 
-target_link_libraries(atomGUI PRIVATE GLEW::GLEW freetype-gl atomCore)
+target_link_libraries(atomGUI PRIVATE atomCore)

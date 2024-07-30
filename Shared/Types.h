@@ -44,7 +44,9 @@ using Unique = std::unique_ptr<T>;
 template<class T>
 using Vector = std::vector<T>;
 
-struct Vector2 {
-    f32 X;
-    f32 Y;
-};
+namespace Atom {
+    struct Vector2 {
+        f32 X;
+        f32 Y;
+    };
+}  // namespace Atom

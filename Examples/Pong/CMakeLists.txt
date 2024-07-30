@@ -18,8 +18,6 @@ add_executable(Pong WIN32
 )
 
 target_link_libraries(Pong PRIVATE
-        GLEW::GLEW
-        freetype-gl
         atomCore
         atomAudio
         atomGraphics

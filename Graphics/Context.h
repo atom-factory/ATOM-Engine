@@ -15,16 +15,14 @@ namespace Atom {
         void EndFrame();
         void Resize(u32 width, u32 height);
 
-        u32 CreateVAO(const std::vector<f32>& vertices, const std::vector<u32>& indices);
-
-        void DrawRectangle(Vector2 size, Vector2 position, const Color& fillColor);
-        void DrawEllipse(float centerX,
-                         float centerY,
-                         float radiusX,
-                         float radiusY,
-                         int segments,
-                         const Color& fillColor);
-        inline void DrawPath() {}
-        inline void DrawBitmap() {}
+        // void DrawRectangle(Vector2 size, Vector2 position, const Color& fillColor);
+        // void DrawEllipse(float centerX,
+        //                  float centerY,
+        //                  float radiusX,
+        //                  float radiusY,
+        //                  int segments,
+        //                  const Color& fillColor);
+        // inline void DrawPath() {}
+        // inline void DrawBitmap() {}
     };  // namespace GraphicsContext
 }  // namespace Atom

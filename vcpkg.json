@@ -1,15 +1,11 @@
 {
-  "name" : "atom",
-  "version-string" : "1.0.0",
-  "builtin-baseline" : "01f602195983451bc83e72f4214af2cbc495aa94",
-  "dependencies" : [ {
-    "name" : "glew",
-    "version>=" : "2.2.0#3"
-  }, {
-    "name" : "glm",
-    "version>=" : "1.0.1#2"
-  }, {
-    "name" : "freetype-gl",
-    "version>=" : "2022-01-17#3"
-  } ]
+  "name": "atom",
+  "version-string": "1.0.0",
+  "builtin-baseline": "01f602195983451bc83e72f4214af2cbc495aa94",
+  "dependencies": [
+    {
+      "name": "d3dx12",
+      "version>=": "may2021#1"
+    }
+  ]
 }
