@@ -19,6 +19,8 @@ namespace Atom {
     static u32 g_RTVDescriptorSize;
     static u32 g_FrameIndex;
 
+    Vector2 GetScreenSize();
+
     bool GraphicsContext::Initialize(HWND hwnd) {
         if (!hwnd)
             return false;
@@ -55,6 +57,38 @@ namespace Atom {
 
         ThrowIfFailed(
           D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_12_1, IID_PPV_ARGS(&g_Device)));
+
+        // Create the command queue
+        D3D12_COMMAND_QUEUE_DESC qd = {};
+        qd.Flags                    = D3D12_COMMAND_QUEUE_FLAG_NONE;
+        qd.Type                     = D3D12_COMMAND_LIST_TYPE_DIRECT;
+        ThrowIfFailed(g_Device->CreateCommandQueue(&qd, IID_PPV_ARGS(&g_CommandQueue)));
+
+        // Create the swap chain
+        DXGI_SWAP_CHAIN_DESC1 scd = {};
+        scd.BufferCount           = 2;
+        scd.Width                 = CAST<u32>(GetScreenSize().X);
+        scd.Height                = CAST<u32>(GetScreenSize().Y);
+        scd.Format                = DXGI_FORMAT_R8G8B8A8_UNORM;
+        scd.SwapEffect            = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+        scd.SampleDesc.Count      = 1;
+        scd.BufferUsage           = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+
+        ComPtr<IDXGISwapChain1> swapChain;
+        ThrowIfFailed(factory->CreateSwapChainForHwnd(g_CommandQueue.Get(),
+                                                      hwnd,
+                                                      &scd,
+                                                      nullptr,
+                                                      nullptr,
+                                                      &swapChain));
+        ThrowIfFailed(swapChain.As(&g_SwapChain));
+        g_FrameIndex = g_SwapChain->GetCurrentBackBufferIndex();
+
+        // Create the render target views
+
+        // Create the command allocator and list
+
+        // Close the command list since we will start in the recording state
 
         return true;
     }
