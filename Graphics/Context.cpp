@@ -4,6 +4,9 @@
 
 #include "Context.h"
 
+#include <DirectXTK12/Inc/GraphicsMemory.h>
+#include <DirectXTK12/Src/PlatformHelpers.h>
+
 namespace Atom {
     static HWND g_TargetHWND;
     static ComPtr<ID3D12Device> g_Device;
@@ -11,6 +14,8 @@ namespace Atom {
     static ComPtr<ID3D12CommandQueue> g_CommandQueue;
     static ComPtr<ID3D12DescriptorHeap> g_RTVHeap;
     static ComPtr<ID3D12Resource> g_RenderTargets[2];
+    static ComPtr<ID3D12GraphicsCommandList> g_CommandList;
+    static ComPtr<ID3D12CommandAllocator> g_CommandAllocator;
     static u32 g_RTVDescriptorSize;
     static u32 g_FrameIndex;
 
@@ -19,6 +24,22 @@ namespace Atom {
             return false;
 
         g_TargetHWND = hwnd;
+
+        u32 dxgiFactoryFlags = 0;
+#ifndef NDEBUG
+        ComPtr<ID3D12Debug> debugController;
+        if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
+            debugController->EnableDebugLayer();
+            dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+        }
+#endif
+
+        // Create DXGI factory
+        ComPtr<IDXGIFactory7> factory;
+        ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&factory)));
+
+        // Create DX12 device
+        ComPtr<IDXGIAdapter4> adapter;
 
         return true;
     }
@@ -32,6 +53,6 @@ namespace Atom {
     Vector2 GetScreenSize() {
         RECT rc;
         ::GetClientRect(g_TargetHWND, &rc);
-        return Vector2(rc.right - rc.left, rc.bottom - rc.top);
+        return Vector2(CAST<f32>(rc.right - rc.left), CAST<f32>(rc.bottom - rc.top));
     }
 }  // namespace Atom

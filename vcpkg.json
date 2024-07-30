@@ -1,11 +1,12 @@
 {
-  "name": "atom",
-  "version-string": "1.0.0",
-  "builtin-baseline": "01f602195983451bc83e72f4214af2cbc495aa94",
-  "dependencies": [
-    {
-      "name": "d3dx12",
-      "version>=": "may2021#1"
-    }
-  ]
+  "name" : "atom",
+  "version-string" : "1.0.0",
+  "builtin-baseline" : "01f602195983451bc83e72f4214af2cbc495aa94",
+  "dependencies" : [ {
+    "name" : "d3dx12",
+    "version>=" : "may2021#1"
+  }, {
+    "name" : "directx-dxc",
+    "version>=" : "2024-03-29"
+  } ]
 }

@@ -5,9 +5,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 set(VCPKG_TARGET_TRIPLET "x64-windows-static")
+set(DIRECTX_DXC_TOOL "${CMAKE_SOURCE_DIR}/Vendor/Tools/directx-dxc/dxc.exe")
 
 find_path(D3DX12_INCLUDE_DIRS "d3dx12.h")
 include_directories(${D3DX12_INCLUDE_DIRS})
+
+add_subdirectory(${CMAKE_SOURCE_DIR}/DirectXTK12 ${CMAKE_BINARY_DIR}/bin/CMake/DirectXTK12)
 
 add_subdirectory(Core)
 add_subdirectory(Audio)
