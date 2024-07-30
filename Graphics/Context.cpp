@@ -84,11 +84,32 @@ namespace Atom {
         ThrowIfFailed(swapChain.As(&g_SwapChain));
         g_FrameIndex = g_SwapChain->GetCurrentBackBufferIndex();
 
-        // Create the render target views
+        // Create the descriptor heap and render target views
+        D3D12_DESCRIPTOR_HEAP_DESC rtvDesc = {};
+        rtvDesc.NumDescriptors             = 2;
+        rtvDesc.Type                       = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+        ThrowIfFailed(g_Device->CreateDescriptorHeap(&rtvDesc, IID_PPV_ARGS(&g_RTVHeap)));
+        g_RTVDescriptorSize =
+          g_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(g_RTVHeap->GetCPUDescriptorHandleForHeapStart());
+        for (u32 i = 0; i < 2; i++) {
+            ThrowIfFailed(g_SwapChain->GetBuffer(i, IID_PPV_ARGS(&g_RenderTargets[i])));
+            g_Device->CreateRenderTargetView(g_RenderTargets[i].Get(), nullptr, rtvHandle);
+            rtvHandle.Offset(1, g_RTVDescriptorSize);
+        }
 
         // Create the command allocator and list
+        ThrowIfFailed(g_Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
+                                                       IID_PPV_ARGS(&g_CommandAllocator)));
+        ThrowIfFailed(g_Device->CreateCommandList(0,
+                                                  D3D12_COMMAND_LIST_TYPE_DIRECT,
+                                                  g_CommandAllocator.Get(),
+                                                  nullptr,
+                                                  IID_PPV_ARGS(&g_CommandList)));
 
         // Close the command list since we will start in the recording state
+        ThrowIfFailed(g_CommandList->Close());
 
         return true;
     }
