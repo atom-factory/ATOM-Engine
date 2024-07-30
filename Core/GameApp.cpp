@@ -45,6 +45,7 @@ namespace Atom {
             }
         }
 
+        GraphicsContext::Shutdown();
         m_ActiveScene->Destroyed();
 
         return 0;

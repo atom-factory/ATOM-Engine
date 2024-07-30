@@ -14,6 +14,7 @@ namespace Atom {
         void RequestNewFrame();
         void BeginFrame();
         void EndFrame();
+        void Shutdown();
         void Resize(u32 width, u32 height);
 
         // void DrawRectangle(Vector2 size, Vector2 position, const Color& fillColor);

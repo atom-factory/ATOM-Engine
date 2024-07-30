@@ -18,6 +18,7 @@ namespace Atom {
     static ComPtr<ID3D12CommandAllocator> g_CommandAllocator;
     static u32 g_RTVDescriptorSize;
     static u32 g_FrameIndex;
+    static HANDLE g_FenceEvent = nullptr;
 
     Vector2 GetScreenSize();
 
@@ -115,12 +116,11 @@ namespace Atom {
     }
 
     void GraphicsContext::RequestNewFrame() {
-        static HANDLE fenceEvent = nullptr;
         static ComPtr<ID3D12Fence> fence;
         static u64 fenceValue = 0;
 
         if (!fence) {
-            fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+            g_FenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
             ThrowIfFailed(
               g_Device->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence)));
         }
@@ -130,8 +130,8 @@ namespace Atom {
         fenceValue++;
 
         if (fence->GetCompletedValue() < currentValue) {
-            ThrowIfFailed(fence->SetEventOnCompletion(currentValue, fenceEvent));
-            WaitForSingleObject(fenceEvent, INFINITE);
+            ThrowIfFailed(fence->SetEventOnCompletion(currentValue, g_FenceEvent));
+            WaitForSingleObject(g_FenceEvent, INFINITE);
         }
     }
 
@@ -176,6 +176,25 @@ namespace Atom {
 
         ThrowIfFailed(g_SwapChain->Present(1, 0));
         g_FrameIndex = g_SwapChain->GetCurrentBackBufferIndex();
+    }
+
+    void GraphicsContext::Shutdown() {
+        RequestNewFrame();
+
+        g_CommandList.Reset();
+        g_CommandQueue.Reset();
+        g_RTVHeap.Reset();
+        for (auto& rtv : g_RenderTargets) {
+            rtv.Reset();
+        }
+        g_SwapChain.Reset();
+        g_CommandQueue.Reset();
+        g_Device.Reset();
+
+        if (g_FenceEvent) {
+            CloseHandle(g_FenceEvent);
+            g_FenceEvent = nullptr;
+        }
     }
 
     void GraphicsContext::Resize(const u32 width, const u32 height) {}
