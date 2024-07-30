@@ -114,9 +114,69 @@ namespace Atom {
         return true;
     }
 
-    void GraphicsContext::BeginFrame() {}
+    void GraphicsContext::RequestNewFrame() {
+        static HANDLE fenceEvent = nullptr;
+        static ComPtr<ID3D12Fence> fence;
+        static u64 fenceValue = 0;
 
-    void GraphicsContext::EndFrame() {}
+        if (!fence) {
+            fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+            ThrowIfFailed(
+              g_Device->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence)));
+        }
+
+        const u64 currentValue = fenceValue;
+        ThrowIfFailed(g_CommandQueue->Signal(fence.Get(), currentValue));
+        fenceValue++;
+
+        if (fence->GetCompletedValue() < currentValue) {
+            ThrowIfFailed(fence->SetEventOnCompletion(currentValue, fenceEvent));
+            WaitForSingleObject(fenceEvent, INFINITE);
+        }
+    }
+
+    void GraphicsContext::BeginFrame() {
+        // Reset command allocator and list
+        ThrowIfFailed(g_CommandAllocator->Reset());
+        ThrowIfFailed(g_CommandList->Reset(g_CommandAllocator.Get(), nullptr));
+
+        // Set viewport and scissor rect
+        D3D12_VIEWPORT viewport = {};
+        auto [width, height]    = GetScreenSize();
+        viewport.Width          = width;
+        viewport.Height         = height;
+        viewport.MinDepth       = D3D12_MIN_DEPTH;
+        viewport.MaxDepth       = D3D12_MAX_DEPTH;
+        g_CommandList->RSSetViewports(1, &viewport);
+
+        D3D12_RECT scissorRect = {0, 0, CAST<i32>(width), CAST<i32>(height)};
+        g_CommandList->RSSetScissorRects(1, &scissorRect);
+
+        // Set render target
+        const CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(
+          g_RTVHeap->GetCPUDescriptorHandleForHeapStart(),
+          CAST<i32>(g_FrameIndex),
+          g_RTVDescriptorSize);
+        g_CommandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+
+        // CLear the render target
+        constexpr float clearColor[] = {100.f / 255.f,
+                                        149.f / 255.f,
+                                        237.f / 255.f,
+                                        1.0f};  // Cornflower blue
+        g_CommandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+
+        // Record commands before calling EndFrame()
+    }
+
+    void GraphicsContext::EndFrame() {
+        ThrowIfFailed(g_CommandList->Close());
+        ID3D12CommandList* ppCommandLists[] = {g_CommandList.Get()};
+        g_CommandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+
+        ThrowIfFailed(g_SwapChain->Present(1, 0));
+        g_FrameIndex = g_SwapChain->GetCurrentBackBufferIndex();
+    }
 
     void GraphicsContext::Resize(const u32 width, const u32 height) {}
 

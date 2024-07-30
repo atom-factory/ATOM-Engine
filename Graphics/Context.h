@@ -11,6 +11,7 @@
 namespace Atom {
     namespace GraphicsContext {
         bool Initialize(HWND hwnd);
+        void RequestNewFrame();
         void BeginFrame();
         void EndFrame();
         void Resize(u32 width, u32 height);

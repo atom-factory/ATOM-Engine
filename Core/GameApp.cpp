@@ -29,9 +29,17 @@ namespace Atom {
                 m_ActiveScene->Update(m_Timer.GetDeltaTime());
 
                 // Render
-                GraphicsContext::BeginFrame();
-                // GraphicsContext::DrawRectangle({100, 100}, {640, 360}, Colors::Cyan);
-                GraphicsContext::EndFrame();
+                {
+                    // Waits for the previous frame to finish
+                    GraphicsContext::RequestNewFrame();
+                    // Resets command list and updates render target views
+                    GraphicsContext::BeginFrame();
+
+                    // Drawing commands go here
+
+                    // Presents the frame and swaps buffers
+                    GraphicsContext::EndFrame();
+                }
 
                 m_ActiveScene->LateUpdate();
             }
